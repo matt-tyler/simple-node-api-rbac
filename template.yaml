@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  simple-node-api
+  Sample SAM Template for simple-node-api
+  
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 3
+    Tracing: Active
+
+Resources:
+  CommentsBucket:
+    Type: AWS::S3::Bucket
+
+  ExpressBackend:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: guestbook/
+      Handler: app.lambdaHandler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          BUCKET: !Ref CommentsBucket
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref CommentsBucket
+      Events:
+        Get:
+          Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /{proxy+}
+            Method: get
+        Post:
+          Type: HttpApi
+          Properties:
+            Path: /{proxy+}
+            Method: post
+
+Outputs:
+  GuestBookApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value:
+      Fn::Sub: https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/
+  ExpressBackendFunction:
+    Description: Express Backend Lambda Function ARN
+    Value: !Sub ExpressBackend.Arn
+  ExpressBackendIamRole:
+    Description: Implicit IAM Role created for Hello World function
+    Value: !Sub ExpressBackendFunctionRole.Arn
+
