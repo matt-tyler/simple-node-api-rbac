@@ -5,14 +5,9 @@
   "main": "app.js",
   "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
   "author": "SAM CLI",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "dependencies": {
-    "aws-sdk": "^2.594.0",
-    "axios": "^0.18.0",
-    "body-parser": "^1.19.0",
-    "env-var": "^4.0.1",
-    "express": "^4.17.1",
-    "serverless-http": "^2.3.0"
+    "axios": "^0.18.0"
   },
   "scripts": {
     "test": "mocha tests/unit/"
