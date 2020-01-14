@@ -57,17 +57,17 @@ async function writeMessage(client, message, author) {
 async function getMessages(client, maxItems, token) {
     const { Contents, NextContinuationToken } = await client.listObjectsV2({
         MaxKeys: maxItems,
-        ContinuationToken: token || 
-            new Buffer(token, 'base64').toString('ascii')
+        ContinuationToken: token ?
+            Buffer.from(token, 'base64').toString('ascii') : undefined
     }).promise();
 
     const res = await Promise.all(Contents
         .map(({ Key }) => client.getObject({ Key }).promise()));
 
     return {
-        Items: res.map(({ Body }) => JSON.parse(Body)),
-        NextToken: NextContinuationToken || 
-            new Buffer(NextContinuationToken, 'ascii').toString('base64')
+        items: res.map(({ Body }) => JSON.parse(Body)),
+        nextToken: NextContinuationToken ?
+            Buffer.from(NextContinuationToken, 'ascii').toString('base64') : undefined
     }
 }
 
