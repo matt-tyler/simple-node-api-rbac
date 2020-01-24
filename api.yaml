@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+  title: simple-node-api
+  description: A simple API for a guestbook application
+  version: 2019-10-13
+paths:
+  /:
+    post:
+      operationId: CreateMessage
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+        required: true
+      responses:
+        "201":
+          description: "Successfully created a message."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+        "400":
+          description: "Bad Request Exception"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestException"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerErrorException"
+    get:
+      operationId: ListMessages
+      parameters:
+        - name: maxItems
+          in: query
+          required: false
+          schema:
+            type: number
+        - name: token
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Successfully listed messages."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageList"
+        "400":
+          description: "Bad Request Exception"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BadRequestException"
+        "500":
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InternalServerErrorException"
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+        author:
+          type: string
+        date:
+          type: string
+          format: date-time
+    MessageList:
+      type: object
+      properties:
+        items: 
+          type: array
+          items:
+            $ref: "#/components/schemas/Message"
+        nextToken:
+          type: string
+          required:
+            - items
+    BadRequestException:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: string
+    InternalServerErrorException:
+      type: object
+      properties:
+        message:
+          type: string
+        errorCode:
+          type: string

@@ -11,6 +11,14 @@ Globals:
     Tracing: Active
 
 Resources:
+  GuestBookApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      DefinitionBody:
+        'Fn::Transform':
+          Name: AWS::Include
+          Parameters:
+            Location: api.yaml
   CommentsBucket:
     Type: AWS::S3::Bucket
 
@@ -30,19 +38,21 @@ Resources:
         Get:
           Type: HttpApi # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /{proxy+}
+            Path: /
             Method: get
+            ApiId: !Ref GuestBookApi
         Post:
           Type: HttpApi
           Properties:
-            Path: /{proxy+}
+            Path: /
             Method: post
+            ApiId: !Ref GuestBookApi
 
 Outputs:
   GuestBookApi:
     Description: API Gateway endpoint URL for Prod stage for Hello World function
     Value:
-      Fn::Sub: https://${ServerlessHttpApi}.execute-api.${AWS::Region}.amazonaws.com/
+      Fn::Sub: https://${GuestBookApi}.execute-api.${AWS::Region}.amazonaws.com/
   ExpressBackendFunction:
     Description: Express Backend Lambda Function ARN
     Value: !Sub ExpressBackend.Arn
