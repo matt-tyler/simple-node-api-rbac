@@ -1,5 +1,10 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
+Parameters:
+  Aud:
+    Type: String
+  Issuer:
+    Type: String
 Description: >
   simple-node-api
   Sample SAM Template for simple-node-api
@@ -19,6 +24,18 @@ Resources:
           Name: AWS::Include
           Parameters:
             Location: api.yaml
+      Auth:
+        Authorizers:
+          OpenIdAuthorizer:
+            IdentitySource: $request.header.Authorization
+            JwtConfiguration:
+              audience:
+                - !Ref Aud
+              issuer: !Ref Issuer
+            OpenIdConnectUrl: !Sub '${Issuer}/.well-known/jwks.json'
+        DefaultAuthorizer: OpenIdAuthorizer
+
+
   CommentsBucket:
     Type: AWS::S3::Bucket
 
@@ -41,12 +58,17 @@ Resources:
             Path: /
             Method: get
             ApiId: !Ref GuestBookApi
+            Auth:
+              Authorizer: NONE
         Post:
           Type: HttpApi
           Properties:
             Path: /
             Method: post
             ApiId: !Ref GuestBookApi
+            Auth:
+              Authorizer: OpenIdAuthorizer
+
 
 Outputs:
   GuestBookApi:
