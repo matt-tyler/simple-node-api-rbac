@@ -43,7 +43,23 @@ Resources:
     Type: AWS::Cognito::UserPoolGroup
     Properties: 
       Description: Comment Writer
-      GroupName: Writer
+      GroupName: writer
+      Precedence: 0
+      UserPoolId: !Ref UserPool
+
+  CommentReaderGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties: 
+      Description: Comment Reader
+      GroupName: reader
+      Precedence: 0
+      UserPoolId: !Ref UserPool
+
+  CommentDeleterGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties: 
+      Description: Comment Deleter
+      GroupName: deleter
       Precedence: 0
       UserPoolId: !Ref UserPool
 
@@ -58,10 +74,24 @@ Resources:
         - Name: email
           Value: !Ref Email
 
-  AttachUserToGroup:
+  AttachUserToWriterGroup:
     Type: AWS::Cognito::UserPoolUserToGroupAttachment
     Properties: 
       GroupName: !Ref CommentWriterGroup
+      Username: !Ref User
+      UserPoolId: !Ref UserPool
+
+  AttachUserToReaderGroup:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    Properties: 
+      GroupName: !Ref CommentReaderGroup
+      Username: !Ref User
+      UserPoolId: !Ref UserPool
+
+  AttachUserToDeleterGroup:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    Properties: 
+      GroupName: !Ref CommentDeleterGroup
       Username: !Ref User
       UserPoolId: !Ref UserPool
 

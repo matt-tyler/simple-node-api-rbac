@@ -59,7 +59,7 @@ Resources:
             Method: get
             ApiId: !Ref GuestBookApi
             Auth:
-              Authorizer: NONE
+              Authorizer: OpenIdAuthorizer
         Post:
           Type: HttpApi
           Properties:
