@@ -8,7 +8,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "aws-sdk": "^2.594.0",
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "casbin": "^3.0.4",
     "env-var": "^4.0.1",
